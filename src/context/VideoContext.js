@@ -36,8 +36,18 @@ export const VideoProvider = ({ children }) => {
       .catch(err => console.error("בעיה בהוספת הסרטון:", err));
   };
 
+  const deleteVideo = (id) => {
+    fetch(`http://localhost:5000/videos/${id}`, {
+      method: 'DELETE'
+    })
+      .then(res => res.json())
+      .then(() => setVideos(prev => prev.filter(v => v.id !== id)))
+      .catch(err => console.error("בעיה במחיקת הסרטון:", err));
+  };
+  
+
   return (
-    <VideoContext.Provider value={{ videos, addVideo }}>
+    <VideoContext.Provider value={{ videos, addVideo, deleteVideo }}>
       {children}
     </VideoContext.Provider>
   );

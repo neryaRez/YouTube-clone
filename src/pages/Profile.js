@@ -1,4 +1,3 @@
-// src/pages/Profile.js
 import './Profile.css';
 import { useVideos } from '../context/VideoContext';
 import VideoCard from '../components/VideoCard';
@@ -11,8 +10,6 @@ export default function Profile() {
   return (
     <div className="profile-container">
       <h2 className="profile-title">🎬 הסרטונים שלי</h2>
-      <p className="profile-subtitle">כאן תוכל לראות את הסרטונים שהעלית</p>
-
       <button
         className="upload-button"
         onClick={() => navigate('/upload')}
@@ -20,8 +17,8 @@ export default function Profile() {
       >
         +
       </button>
-
-      <div className="video-list">
+      <p className="profile-subtitle">כאן תוכל לראות את הסרטונים שהעלית</p>
+      <div className="video-grid">
         {videos.map((video, index) => (
           <VideoCard key={index} {...video} />
         ))}
