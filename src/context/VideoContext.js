@@ -1,33 +1,39 @@
-import React, { createContext, useContext, useState } from 'react';
+// src/context/VideoContext.js
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const VideoContext = createContext();
-
 export const useVideos = () => useContext(VideoContext);
 
 export const VideoProvider = ({ children }) => {
-  const [videos, setVideos] = useState([
-    {
-      id: "1",
-      title: "סרטון 1",
-      views: "1,000",
-      thumbnail: "https://i.ytimg.com/vi/ysz5S6PUM-U/mqdefault.jpg"
-    },
-    {
-      id: "2",
-      title: "סרטון 2",
-      views: "2,000",
-      thumbnail: "https://i.ytimg.com/vi/ScMzIvxBSi4/mqdefault.jpg"
-    },
-    {
-      id: "3",
-      title: "סרטון 3",
-      views: "3,000",
-      thumbnail: "https://i.ytimg.com/vi/jNQXAC9IVRw/mqdefault.jpg"
-    }
-  ]);
+  const [videos, setVideos] = useState([]);
 
+  // שליפת סרטונים מהשרת כשנטען
+  useEffect(() => {
+    fetch('http://localhost:5000/videos')
+      .then(res => res.json())
+      .then(data => {
+        const withId = data.map(v => ({
+          id: v._id,
+          title: v.title,
+          views: v.views,
+          thumbnail: v.thumbnail,
+          videoUrl: v.videoUrl
+        }))
+        setVideos(withId);
+      })
+      .catch(err => console.error("בעיה בשליפת הסרטונים:", err));
+  }, []);
+
+  // שליחת סרטון חדש לשרת
   const addVideo = (video) => {
-    setVideos(prev => [...prev, { ...video, views: "0" }]);
+    fetch('http://localhost:5000/videos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(video)
+    })
+      .then(res => res.json())
+      .then(newVideo => setVideos(prev => [...prev, newVideo]))
+      .catch(err => console.error("בעיה בהוספת הסרטון:", err));
   };
 
   return (

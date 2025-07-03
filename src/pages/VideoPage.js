@@ -1,40 +1,36 @@
 // src/pages/VideoPage.js
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import ReactPlayer from 'react-player';
-const mockVideos = [
-  {
-    id: "1",
-    title: "סרטון 1",
-    views: "1,000",
-    description: "תיאור לסרטון הראשון",
-    videoUrl: "https://www.youtube.com/watch?v=_CbbUYjh_Qw&list=RD_CbbUYjh_Qw&start_radio=1"
-  },
-  {
-    id: "2",
-    title: "סרטון 2",
-    views: "2,000",
-    description: "סרטון נוסף על משהו מעניין",
-    videoUrl: "https://www.youtube.com/watch?v=hdPnkjjr97s&t=30s"
-  },
-];
+import React from "react";
+import { useParams } from "react-router-dom";
+import { useVideos } from "../context/VideoContext";
+import './VideoPage.css'
+
 
 export default function VideoPage() {
   const { id } = useParams();
-  const video = mockVideos.find(v => v.id === id);
+  const { videos } = useVideos();
+
+  // עדיין לא נטענו הסרטונים
+  if (videos.length === 0) {
+    return <div style={{ padding: "2rem" }}>⏳ טוען...</div>;
+  }
+
+  const video = videos.find(v => v.id === id); // <-- שים לב פה לתיקון
 
   if (!video) {
-    return <div>לא נמצא סרטון</div>;
+    return <div style={{ padding: "2rem" }}>❌ סרטון לא נמצא</div>;
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>{video.title}</h1>
-      <ReactPlayer url={video.videoUrl} 
-      controls width="100%" 
-      height="400px" />
-      <p>{video.views} צפיות</p>
-      <p>{video.description}</p>
+    <div className="video-page">
+      <h2>{video.title}</h2>
+      <div className="video-container">
+        <iframe
+          src={video.videoUrl}
+          title={video.title}
+          allowFullScreen
+        />
+      </div>
+      <p className="views">{video.views} צפיות</p>
     </div>
   );
 }
