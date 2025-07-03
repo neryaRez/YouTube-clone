@@ -1,15 +1,17 @@
 // Profile.js
 import { useVideos } from '../context/VideoContext';
-import AddVideo from '../components/AddVideo';
 import VideoCard from '../components/VideoCard';
-
+import UploadPage from './UploadPage';
 export default function Profile() {
   const { videos, addVideo } = useVideos();
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '20px' ,alignItems: 'center', backgroundColor: '#2e003e', minHeight: '100vh', color: '#fff' ,
+    display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    
       <h2>הסרטונים שלי</h2>
-      <AddVideo onAdd={addVideo} />
+      <p>כאן תוכל לראות את הסרטונים שהעלית</p>
+      <UploadPage UploadPage={UploadPage} addVideo={addVideo} />
       <div className="video-list">
         {videos.map((video, index) => (
           <VideoCard key={index} {...video} />
