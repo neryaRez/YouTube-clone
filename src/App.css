@@ -1,0 +1,136 @@
+/* App.css */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #111;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #4b1c48;
+  color: white;
+}
+
+header .logo {
+  color: #0e0206;
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration:solid underline;
+  text-decoration-color: #d60458;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-emphasis-color: #0f0007;
+  animation: reverse 2s infinite alternate;
+}
+header .logo a {
+  color: #e60650;
+  text-decoration: none;
+  text-emphasis-color: #0f0007;
+  font-weight: bold;
+  align-self: center;
+}
+
+header input {
+  padding: 6px 12px;
+  width: 300px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+}
+
+header button {
+  background-color: #ff0066;
+  color: black;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 4px;
+  font-size: 18px;
+  font-family: Arial, sans-serif;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+h1 {
+  padding: 20px;
+  text-align:right;
+  color: #4b1c48;
+  font-size: 35px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  margin: 30px 0 20px;
+  right: 30px;
+  position: relative;
+
+}
+
+.button-link {
+  background-color: #c74277;
+  color: rgb(170, 11, 11);
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 18px;
+  font-family: Arial, sans-serif;
+  font-weight: 800;
+  text-decoration: none;
+}
+header .button-link {
+  text-decoration: none;
+  color: rgb(112, 17, 17);
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 18px;
+  font-family:inherit;
+  font-weight: 800;
+}
+
+.video-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: right;
+  gap: 20px;
+  padding: 0 20px 40px;
+}
+
+.video-card {
+  width: 250px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.video-card:hover {
+  transform: scale(1.03);
+}
+
+.video-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+
+.video-info {
+  padding: 10px;
+}
+
+.video-info h3 {
+  margin: 0 0 5px;
+  font-size: 16px;
+}
+
+.video-info p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+.video-info span {
+  display: block;
+  margin-top: 5px;
+  color: #999;
+  font-size: 12px;
+}
