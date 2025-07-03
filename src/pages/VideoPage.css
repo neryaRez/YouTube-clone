@@ -1,41 +1,103 @@
-.video-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 20px;
-  }
-  
-  .video-page h2 {
-    font-size: 28px;
-    margin-bottom: 20px;
-    color: #3b003b;
-    text-align: center;
-    text-shadow: 1px 1px 2px #ccc;
-  }
-  
-  .video-container {
-    width: 100%;
-    max-width: 900px;
-    aspect-ratio: 16 / 9;
-    position: relative;
-    overflow: hidden;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    margin-bottom: 20px;
-  }
-  
-  .video-container iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 12px;
-  }
-  
-  .views {
-    font-size: 16px;
-    color: #444;
-    text-align: right;
-    width: 100%;
-    max-width: 900px;
-  }
-  
+
+.video-page-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-end; /* מצמיד לימין */
+  padding: 24px 40px;
+  gap: 24px;
+  direction: rtl;
+  background-color: #33072c;
+}
+
+.video-main {
+  flex: 24;
+}
+
+.video-main iframe {
+  width: 96.5%;
+  height: 600px;
+  border-radius: 45px;
+}
+
+.video-title {
+  margin-top: 16px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #e2d8e7;
+}
+
+.video-views {
+  font-size: 14px;
+  color: #eee4e4;
+  margin-top: 4px;
+}
+
+.video-description {
+  margin-top: 12px;
+  font-size: 16px;
+  color: #f1ecec;
+}
+
+.video-sidebar {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 10px;
+  padding-top: 20px;
+  border-radius: 20px;
+  background: #3a0b3f;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  width: 300px;
+  position: sticky;
+  top: 20px;
+}
+
+.video-sidebar a {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  text-decoration: none;
+  color: inherit;
+  padding: 12px 8px;
+  border-radius: 8px;
+  background: #a37e7e;
+  transition: background 0.2s ease;
+}
+
+.video-sidebar a:hover {
+  background: #1a0b0b;
+  transform: scale(1.02);
+}
+
+.video-sidebar img {
+  width: 240px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.video-sidebar div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.video-sidebar .title {
+  font-weight: 600;
+  font-size: 15px;
+  color: #2c0a3d;
+  transition: color 0.2s ease;
+}
+
+.video-sidebar a:hover .title {
+  color: #fff;
+}
+
+.video-sidebar .views {
+  font-size: 13px;
+  color: #666;
+}

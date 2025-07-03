@@ -1,18 +1,22 @@
-// Home.js
-import { useVideos } from '../context/VideoContext';
-import VideoCard from '../components/VideoCard';
+import React from "react";
+import { useVideos } from "../context/VideoContext";
+import { Link } from "react-router-dom";
+import "./HomePage.css";
 
-export default function Home() {
+export default function HomePage() {
   const { videos } = useVideos();
 
   return (
-    <div>
-      <h1>סרטונים מומלצים</h1>
-      <div className="video-list">
-        {videos.map((video, index) => (
-          <VideoCard key={index} {...video} />
-        ))}
-      </div>
+    <div className="home-page">
+      {videos.map((video) => (
+        <Link to={`/video/${video.id}`} key={video.id} className="video-card">
+          <img src={video.thumbnail} alt={video.title} />
+          <div className="video-info">
+            <h3>{video.title}</h3>
+            <p>{video.views} צפיות</p>
+          </div>
+        </Link>
+      ))}
     </div>
   );
 }
