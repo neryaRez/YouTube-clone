@@ -1,17 +1,26 @@
-// Profile.js
+// src/pages/Profile.js
+import './Profile.css';
 import { useVideos } from '../context/VideoContext';
 import VideoCard from '../components/VideoCard';
-import UploadPage from './UploadPage';
+import { useNavigate } from 'react-router-dom';
+
 export default function Profile() {
-  const { videos, addVideo } = useVideos();
+  const { videos } = useVideos();
+  const navigate = useNavigate();
 
   return (
-    <div style={{ padding: '20px' ,alignItems: 'center', backgroundColor: '#2e003e', minHeight: '100vh', color: '#fff' ,
-    display: 'flex', flexDirection: 'column', gap: '20px' }}>
-    
-      <h2>הסרטונים שלי</h2>
-      <p>כאן תוכל לראות את הסרטונים שהעלית</p>
-      <UploadPage UploadPage={UploadPage} addVideo={addVideo} />
+    <div className="profile-container">
+      <h2 className="profile-title">🎬 הסרטונים שלי</h2>
+      <p className="profile-subtitle">כאן תוכל לראות את הסרטונים שהעלית</p>
+
+      <button
+        className="upload-button"
+        onClick={() => navigate('/upload')}
+        title="העלה סרטון חדש"
+      >
+        +
+      </button>
+
       <div className="video-list">
         {videos.map((video, index) => (
           <VideoCard key={index} {...video} />
@@ -20,4 +29,3 @@ export default function Profile() {
     </div>
   );
 }
-// This component allows users to view and add their own videos.

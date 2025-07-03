@@ -1,0 +1,37 @@
+/* src/pages/Profile.css */
+.profile-container {
+    padding: 40px;
+    background-color: #2e003e;
+    min-height: 100vh;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 30px;
+  }
+  
+  .profile-title {
+    font-size: 28px;
+  }
+  
+  .profile-subtitle {
+    font-size: 16px;
+  }
+  
+  .upload-button {
+    background: #a2469c;
+    color: #fff;
+    font-size: 18px;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+  }
+  
+  .video-list {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  
