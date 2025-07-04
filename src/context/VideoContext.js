@@ -18,7 +18,8 @@ export const VideoProvider = ({ children }) => {
           views: v.views,
           thumbnail: v.thumbnail,
           videoUrl: v.videoUrl,
-          description: v.description
+          description: v.description,
+          username:v.userID?.username
         }))
         setVideos(withId);
       })
@@ -26,12 +27,22 @@ export const VideoProvider = ({ children }) => {
   }, []);
 
   const addVideo = (video) => {
+    const token = localStorage.getItem('token'); // נשלף מהלוקל סטורג'
+  
     fetch('http://localhost:5000/videos', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // מוסיפים את ההרשאה
+      },
       body: JSON.stringify(video)
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("הוספת הסרטון נכשלה");
+        }
+        return res.json();
+      })
       .then(newVideo => setVideos(prev => [...prev, {
         id: newVideo._id,
         title: newVideo.title,
@@ -40,7 +51,7 @@ export const VideoProvider = ({ children }) => {
         videoUrl: newVideo.videoUrl,
         description: newVideo.description
       }]))
-            .catch(err => console.error("בעיה בהוספת הסרטון:", err));
+      .catch(err => console.error("בעיה בהוספת הסרטון:", err));
   };
 
   const deleteVideo = (id) => {

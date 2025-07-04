@@ -1,10 +1,10 @@
-// src/components/VideoCard.js
+// File: src/components/VideoCard.js
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useVideos } from '../context/VideoContext';
 
-
-export default function VideoCard({ id, title, views, thumbnail }) {
+export default function VideoCard({ id, title, views, thumbnail, username }) {
   const { deleteVideo } = useVideos();
   const location = useLocation();
   const isProfile = location.pathname === "/profile";
@@ -23,14 +23,10 @@ export default function VideoCard({ id, title, views, thumbnail }) {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  // ✅ מצרף את context menu רק אם בפרופיל
   const handleContextMenu = (e) => {
     if (!isProfile) return;
-
-    // בודק אם הלחיצה התבצעה על הכרטיס עצמו
     if (cardRef.current && cardRef.current.contains(e.target)) {
       e.preventDefault();
-      console.log("Right click on video card", id);
       setMenuPos({ x: e.clientX, y: e.clientY });
       setMenuVisible(true);
     }
@@ -52,13 +48,16 @@ export default function VideoCard({ id, title, views, thumbnail }) {
       className="video-card-wrapper"
       ref={cardRef}
       style={{ position: 'relative' }}
-      onContextMenu={handleContextMenu} // ⬅ מצרף כאן במקום בלינק או בתמונה עצמה
+      onContextMenu={handleContextMenu}
     >
       <Link to={`/video/${id}`} className="video-card">
-        <img src={thumbnail} alt={title} />
+        <div className="video-thumbnail-wrapper">
+          <img src={thumbnail} alt={title} />
+        </div>
         <div className="video-info">
           <h3>{title}</h3>
           <p>{views} צפיות</p>
+          <p>הועלה על ידי: <strong>{username || 'אנונימי'}</strong></p>
         </div>
       </Link>
 
