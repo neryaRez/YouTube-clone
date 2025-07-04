@@ -9,7 +9,7 @@ export default function UploadPage() {
   const [videoUrl, setVideoUrl] = useState('');
   const { addVideo } = useVideos();
   const navigate = useNavigate();
-
+  const [description, setDescription] = useState('');
   function getThumbnailFromUrl(url) {
     const match = url.match(/embed\/(.+?)$/);
     return match ? `https://img.youtube.com/vi/${match[1]}/0.jpg` : '';
@@ -22,7 +22,8 @@ export default function UploadPage() {
       title,
       videoUrl,
       thumbnail: getThumbnailFromUrl(videoUrl),
-      views: 0
+      views: 0,
+      description
     };
 
     addVideo(newVideo);
@@ -39,6 +40,12 @@ export default function UploadPage() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
+        />
+        <input
+          type="text"
+          placeholder="תיאור"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
         <input
           type="text"

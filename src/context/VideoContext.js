@@ -17,7 +17,8 @@ export const VideoProvider = ({ children }) => {
           title: v.title,
           views: v.views,
           thumbnail: v.thumbnail,
-          videoUrl: v.videoUrl
+          videoUrl: v.videoUrl,
+          description: v.description
         }))
         setVideos(withId);
       })
@@ -31,8 +32,15 @@ export const VideoProvider = ({ children }) => {
       body: JSON.stringify(video)
     })
       .then(res => res.json())
-      .then(newVideo => setVideos(prev => [...prev, newVideo]))
-      .catch(err => console.error("בעיה בהוספת הסרטון:", err));
+      .then(newVideo => setVideos(prev => [...prev, {
+        id: newVideo._id,
+        title: newVideo.title,
+        views: newVideo.views,
+        thumbnail: newVideo.thumbnail,
+        videoUrl: newVideo.videoUrl,
+        description: newVideo.description
+      }]))
+            .catch(err => console.error("בעיה בהוספת הסרטון:", err));
   };
 
   const deleteVideo = (id) => {
