@@ -7,6 +7,7 @@ import Profile from './pages/Profile';
 import VideoPage from './pages/VideoPage';
 import { VideoProvider } from './context/VideoContext';
 import UploadPage from './pages/UploadPage';
+import LoginPage from './pages/LogIn';
 import './App.css'; // Assuming you have some global styles
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/video/:id" element={<VideoPage />} />
           <Route path="/upload" element={<UploadPage />} />
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </Router>
     </VideoProvider>

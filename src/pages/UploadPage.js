@@ -2,32 +2,52 @@
 import './UploadPage.css';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useVideos } from '../context/VideoContext';
 
 export default function UploadPage() {
   const [title, setTitle] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
-  const { addVideo } = useVideos();
-  const navigate = useNavigate();
   const [description, setDescription] = useState('');
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
+
   function getThumbnailFromUrl(url) {
     const match = url.match(/embed\/(.+?)$/);
     return match ? `https://img.youtube.com/vi/${match[1]}/0.jpg` : '';
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const token = localStorage.getItem('token');
 
     const newVideo = {
       title,
       videoUrl,
       thumbnail: getThumbnailFromUrl(videoUrl),
-      views: 0,
-      description
+      description,
     };
 
-    addVideo(newVideo);
-    navigate('/');
+    try {
+      const res = await fetch('http://localhost:5000/videos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(newVideo),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setMessage('✅ סרטון הועלה בהצלחה');
+        navigate('/');
+      } else {
+        setMessage(data.message || 'שגיאה בהעלאה');
+      }
+    } catch (err) {
+      setMessage('🚨 שגיאה בשרת');
+    }
   };
 
   return (
@@ -56,6 +76,7 @@ export default function UploadPage() {
         />
         <button type="submit">הוסף 🎬</button>
       </form>
+      {message && <p>{message}</p>}
     </div>
   );
 }

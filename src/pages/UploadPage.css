@@ -4,10 +4,13 @@
     background-color: #2e003e;
     min-height: 100vh;
     color: #fff;
+    direction: rtl;
   }
   
   .upload-title {
     margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: bold;
   }
   
   .upload-form {
@@ -15,14 +18,26 @@
     flex-direction: column;
     gap: 16px;
     max-width: 400px;
+    max-height: 2000px;
+    
   }
   
   .upload-form input {
     padding: 10px;
     border: none;
     border-radius: 6px;
+    background: #9c6717;
+    text-emphasis-color: #1f0808;
+    text-decoration-color: #160e02;
+    color: #130e0e;
+
   }
-  
+  .upload-form input::placeholder {
+    color: #1b1616;
+    opacity: 1.2;
+    font-size: bolder;
+    font-weight: 700;
+  }
   .upload-form button {
     padding: 12px;
     background: #a2469c;
