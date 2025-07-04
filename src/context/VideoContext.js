@@ -6,8 +6,8 @@ export const useVideos = () => useContext(VideoContext);
 
 export const VideoProvider = ({ children }) => {
   const [videos, setVideos] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // שליפת סרטונים מהשרת כשנטען
   useEffect(() => {
     fetch('http://localhost:5000/videos')
       .then(res => res.json())
@@ -24,7 +24,6 @@ export const VideoProvider = ({ children }) => {
       .catch(err => console.error("בעיה בשליפת הסרטונים:", err));
   }, []);
 
-  // שליחת סרטון חדש לשרת
   const addVideo = (video) => {
     fetch('http://localhost:5000/videos', {
       method: 'POST',
@@ -44,12 +43,10 @@ export const VideoProvider = ({ children }) => {
       .then(() => setVideos(prev => prev.filter(v => v.id !== id)))
       .catch(err => console.error("בעיה במחיקת הסרטון:", err));
   };
-  
 
   return (
-    <VideoContext.Provider value={{ videos, addVideo, deleteVideo }}>
+    <VideoContext.Provider value={{ videos, addVideo, deleteVideo, searchTerm, setSearchTerm }}>
       {children}
     </VideoContext.Provider>
   );
 };
-export default VideoProvider;

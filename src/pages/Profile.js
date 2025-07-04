@@ -4,8 +4,12 @@ import VideoCard from '../components/VideoCard';
 import { useNavigate } from 'react-router-dom';
 
 export default function Profile() {
-  const { videos } = useVideos();
+  const { videos, searchTerm } = useVideos();
   const navigate = useNavigate();
+
+  const filteredVideos = videos.filter(video =>
+    video.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="profile-container">
@@ -19,7 +23,7 @@ export default function Profile() {
       </button>
       <p className="profile-subtitle">כאן תוכל לראות את הסרטונים שהעלית</p>
       <div className="video-grid">
-        {videos.map((video, index) => (
+        {filteredVideos.map((video, index) => (
           <VideoCard key={index} {...video} />
         ))}
       </div>
