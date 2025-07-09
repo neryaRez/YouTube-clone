@@ -79,6 +79,38 @@ export const VideoProvider = ({ children }) => {
       .then(() => setVideos(prev => prev.filter(v => v.id !== id)))
       .catch(err => console.error("בעיה במחיקת הסרטון:", err));
   };
+ 
+  const fetchComments = async (videoId) => {
+    try {
+      const res = await fetch(`http://localhost:5000/comments/${videoId}`);
+      const data = await res.json();
+      return data;
+    } catch (err) {
+      console.error("בעיה בשליפת תגובות:", err);
+      return [];
+    }
+  };
+  
+  const addComment = async (videoId, text) => {
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch(`http://localhost:5000/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ videoId, text })
+      });
+  
+      if (!res.ok) throw new Error("שליחת תגובה נכשלה");
+  
+      return await res.json();
+    } catch (err) {
+      console.error("בעיה בשליחת תגובה:", err);
+      return null;
+    }
+  };
 
   return (
     <VideoContext.Provider value={{
@@ -88,7 +120,9 @@ export const VideoProvider = ({ children }) => {
       searchTerm,
       setSearchTerm,
       currentUser,
-      setCurrentUser   // ✅ הוספה חשובה בשביל logout!
+      setCurrentUser,   // ✅ הוספה חשובה בשביל logout!
+      fetchComments,
+      addComment
     }}>  
       {children}
     </VideoContext.Provider>
