@@ -1,19 +1,21 @@
 // src/components/ProtectedRoute.js
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useVideos } from '../context/VideoContext';
 
 export default function ProtectedRoute({ children }) {
   const { currentUser } = useVideos();
+  const alertShown = useRef(false); // 🧠 נעשה מעקב אם כבר ראינו את ה־alert
 
   useEffect(() => {
-    if (!currentUser) {
+    if (!currentUser && !alertShown.current) {
       alert("🔒 עליך להתחבר תחילה");
+      alertShown.current = true; // שלא יקרה שוב
     }
-  }, [currentUser]); // ✅ ירוץ רק כש currentUser משתנה
+  }, [currentUser]);
 
   if (!currentUser) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;

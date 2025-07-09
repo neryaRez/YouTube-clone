@@ -1,24 +1,51 @@
-// src/components/Header.js
+// Header.js
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useVideos } from '../context/VideoContext';
 
 const Header = () => {
-  const { setSearchTerm } = useVideos();
+  const navigate = useNavigate();
+  const { currentUser, setCurrentUser, setSearchTerm } = useVideos();
+
+  const handleSignIn = () => {
+    if (currentUser) {
+      navigate('/profile');
+    } else {
+      navigate('/login');
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setCurrentUser(null);
+    navigate('/');
+  };
 
   return (
     <header>
       <div className="logo">
         <Link to="/">YouTube Clone</Link>
       </div>
+
       <input
         type="text"
         placeholder="חפש סרטונים..."
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <Link to="/register" className='button-link'>sign up</Link>
-      <Link to="/profile" className='button-link'>sign in</Link>
+
+      {currentUser ? (
+        <>
+          <Link to="/profile" className="button-link">my profile</Link>
+          <button onClick={handleLogout} className="button-link">log out</button>
+        </>
+      ) : (
+        <>
+          <button onClick={handleSignIn} className="button-link">sign in</button>
+          <Link to="/register" className="button-link">sign up</Link>
+        </>
+      )}
     </header>
   );
 };
+
 export default Header;

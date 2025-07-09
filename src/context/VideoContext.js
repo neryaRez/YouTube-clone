@@ -87,8 +87,9 @@ export const VideoProvider = ({ children }) => {
       deleteVideo,
       searchTerm,
       setSearchTerm,
-      currentUser
-    }}>
+      currentUser,
+      setCurrentUser   // ✅ הוספה חשובה בשביל logout!
+    }}>  
       {children}
     </VideoContext.Provider>
   );
