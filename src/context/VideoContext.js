@@ -7,6 +7,7 @@ export const useVideos = () => useContext(VideoContext);
 export const VideoProvider = ({ children }) => {
   const [videos, setVideos] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     fetch('http://localhost:5000/videos')
@@ -19,21 +20,37 @@ export const VideoProvider = ({ children }) => {
           thumbnail: v.thumbnail,
           videoUrl: v.videoUrl,
           description: v.description,
-          username:v.userID?.username
+          username: v.userId?.username // תיקון קטן כאן: userId ולא userID
         }))
         setVideos(withId);
       })
       .catch(err => console.error("בעיה בשליפת הסרטונים:", err));
+
+    // שליפת המשתמש המחובר (אם יש טוקן)
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetch('http://localhost:5000/auth/me', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+        .then(res => res.json())
+        .then(user => {
+          setCurrentUser(user);
+          console.log("🔑 משתמש מחובר:", user);
+        })
+        .catch(err => console.error("בעיה בשליפת המשתמש:", err));
+    }
   }, []);
 
   const addVideo = (video) => {
-    const token = localStorage.getItem('token'); // נשלף מהלוקל סטורג'
-  
+    const token = localStorage.getItem('token');
+
     fetch('http://localhost:5000/videos', {
       method: 'POST',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // מוסיפים את ההרשאה
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify(video)
     })
@@ -64,7 +81,14 @@ export const VideoProvider = ({ children }) => {
   };
 
   return (
-    <VideoContext.Provider value={{ videos, addVideo, deleteVideo, searchTerm, setSearchTerm }}>
+    <VideoContext.Provider value={{
+      videos,
+      addVideo,
+      deleteVideo,
+      searchTerm,
+      setSearchTerm,
+      currentUser
+    }}>
       {children}
     </VideoContext.Provider>
   );

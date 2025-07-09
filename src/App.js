@@ -8,7 +8,10 @@ import VideoPage from './pages/VideoPage';
 import { VideoProvider } from './context/VideoContext';
 import UploadPage from './pages/UploadPage';
 import LoginPage from './pages/LogIn';
-import './App.css'; // Assuming you have some global styles
+import ProtectedRoute from './components/ProtectedRoute'; // 👈 חדש
+import RegisterPage from './pages/RegisterPage';
+import './App.css';
+
 const App = () => {
   return (
     <VideoProvider>
@@ -16,10 +19,16 @@ const App = () => {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
           <Route path="/video/:id" element={<VideoPage />} />
-          <Route path="/upload" element={<UploadPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          {/* 🛡️ דפים שמוגנים */}
+          <Route path="/upload" element={
+            <ProtectedRoute><UploadPage /></ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute><Profile /></ProtectedRoute>
+          } />
         </Routes>
       </Router>
     </VideoProvider>

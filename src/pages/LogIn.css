@@ -1,0 +1,49 @@
+/* src/pages/LogIn.css */
+.login-container {
+    padding: 40px;
+    background-color: #2e003e;
+    min-height: 100vh;
+    color: #fff;
+    direction: rtl;
+  }
+  
+  .login-title {
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 400px;
+  }
+  
+  .login-form input {
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    background: #9c6717;
+    color: #fff;
+  }
+  
+  .login-form input::placeholder {
+    color: #eee;
+    font-weight: bold;
+  }
+  
+  .login-form button {
+    padding: 12px;
+    background: #a2469c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .login-error {
+    color: #ff6060;
+    font-weight: bold;
+  }
+  

@@ -1,4 +1,7 @@
+// src/pages/LogIn.js
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './LogIn.css'; // ודא שקיים קובץ עיצוב תואם
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -21,7 +24,7 @@ export default function LoginPage() {
       if (res.ok) {
         localStorage.setItem('token', data.token);
         alert('🎉 התחברת בהצלחה!');
-        window.location.href = '/'; // או נווט לדף הבית
+        window.location.href = '/'; // ניווט לדף הבית
       } else {
         setError(data.message || 'שגיאה בהתחברות');
       }
@@ -31,14 +34,33 @@ export default function LoginPage() {
   };
 
   return (
-    <div>
-      <h2>התחברות</h2>
-      <form onSubmit={handleLogin}>
-        <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="שם משתמש" />
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="סיסמה" />
+    <div className="login-container">
+      <h2 className="login-title">🔑 התחברות</h2>
+      <form onSubmit={handleLogin} className="login-form">
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="שם משתמש"
+          required
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="סיסמה"
+          required
+        />
         <button type="submit">התחבר</button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p className="login-error">{error}</p>}
       </form>
+
+      <p style={{ marginTop: "20px" }}>
+        אין לך חשבון?{" "}
+        <Link to="/register" style={{ color: "#e673b0", fontWeight: "bold" }}>
+          הירשם כאן
+        </Link>
+      </p>
     </div>
   );
 }

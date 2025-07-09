@@ -16,9 +16,9 @@ const Header = () => {
         placeholder="חפש סרטונים..."
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <Link to="/profile" className='button-link'>my profile</Link>
+      <Link to="/register" className='button-link'>sign up</Link>
+      <Link to="/profile" className='button-link'>sign in</Link>
     </header>
   );
 };
-
 export default Header;
