@@ -11,20 +11,21 @@ export default function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-
+  
     try {
       const res = await fetch('http://localhost:5000/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
-
+  
       const data = await res.json();
-
+  
       if (res.ok) {
         localStorage.setItem('token', data.token);
+        localStorage.setItem('userId', data.userId); // ⬅️ שים את זה!!!
         alert('🎉 התחברת בהצלחה!');
-        window.location.href = '/'; // ניווט לדף הבית
+        window.location.href = '/';
       } else {
         setError(data.message || 'שגיאה בהתחברות');
       }
@@ -32,6 +33,7 @@ export default function LoginPage() {
       setError('שגיאת שרת');
     }
   };
+  
 
   return (
     <div className="login-container">

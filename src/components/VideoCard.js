@@ -1,13 +1,14 @@
-// File: src/components/VideoCard.js
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useVideos } from '../context/VideoContext';
 
-export default function VideoCard({ id, title, views, thumbnail, username }) {
+export default function VideoCard({ video }) {
   const { deleteVideo } = useVideos();
   const location = useLocation();
   const isProfile = location.pathname === "/profile";
+
+  const { _id, title, views, thumbnail, userId } = video;
+  const username = userId?.username || 'אנונימי';
 
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
@@ -33,12 +34,12 @@ export default function VideoCard({ id, title, views, thumbnail, username }) {
   };
 
   const handleDelete = () => {
-    deleteVideo(id);
+    deleteVideo(_id);
     setMenuVisible(false);
   };
 
   const handleShare = () => {
-    navigator.clipboard.writeText(`${window.location.origin}/video/${id}`);
+    navigator.clipboard.writeText(`${window.location.origin}/video/${_id}`);
     alert("📎 הקישור הועתק");
     setMenuVisible(false);
   };
@@ -50,14 +51,14 @@ export default function VideoCard({ id, title, views, thumbnail, username }) {
       style={{ position: 'relative' }}
       onContextMenu={handleContextMenu}
     >
-      <Link to={`/video/${id}`} className="video-card">
+      <Link to={`/video/${_id}`} className="video-card">
         <div className="video-thumbnail-wrapper">
           <img src={thumbnail} alt={title} />
         </div>
         <div className="video-info">
           <h3>{title}</h3>
           <p>{views} צפיות</p>
-          <p>הועלה על ידי: <strong>{username || 'אנונימי'}</strong></p>
+          <p>הועלה על ידי: <strong>{username}</strong></p>
         </div>
       </Link>
 

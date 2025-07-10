@@ -1,11 +1,37 @@
 import './Profile.css';
-import { useVideos } from '../context/VideoContext';
+import { useEffect, useState } from 'react';
 import VideoCard from '../components/VideoCard';
 import { useNavigate } from 'react-router-dom';
+import { useVideos } from '../context/VideoContext';
 
 export default function Profile() {
-  const { videos, searchTerm } = useVideos();
+  const [videos, setVideos] = useState([]);
+  const { searchTerm } = useVideos();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchMyVideos = async () => {
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+
+      try {
+        const res = await fetch(`http://localhost:5000/users/${userId}/videos`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          setVideos(data);
+        } else {
+          console.error('⚠️ שגיאה:', data.message);
+        }
+      } catch (err) {
+        console.error("⚠️ שגיאה בטעינת סרטוני המשתמש:", err);
+      }
+    };
+
+    fetchMyVideos();
+  }, []);
 
   const filteredVideos = videos.filter(video =>
     video.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -22,9 +48,10 @@ export default function Profile() {
         +
       </button>
       <p className="profile-subtitle">כאן תוכל לראות את הסרטונים שהעלית</p>
+
       <div className="video-grid">
         {filteredVideos.map((video, index) => (
-          <VideoCard key={index} {...video} />
+          <VideoCard key={index} video={video} />
         ))}
       </div>
     </div>

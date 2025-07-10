@@ -14,14 +14,8 @@ export default function HomePage() {
   return (
     <div className="home-page">
       {filteredVideos.map((video) => (
-        <VideoCard
-          key={video.id}
-          id={video.id}
-          title={video.title}
-          views={video.views}
-          thumbnail={video.thumbnail}
-          username={video.username} // ✅ נוספה שורת השם
-        />
+        <VideoCard key={video._id} video={video} />
+
       ))}
     </div>
   );

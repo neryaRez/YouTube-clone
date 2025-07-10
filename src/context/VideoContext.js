@@ -13,20 +13,22 @@ export const VideoProvider = ({ children }) => {
     fetch('http://localhost:5000/videos')
       .then(res => res.json())
       .then(data => {
-        const withId = data.map(v => ({
+        const normalized = data.map(v => ({
           id: v._id,
           title: v.title,
           views: v.views,
           thumbnail: v.thumbnail,
           videoUrl: v.videoUrl,
           description: v.description,
-          username: v.userId?.username // תיקון קטן כאן: userId ולא userID
-        }))
-        setVideos(withId);
+          userId: v.userId && typeof v.userId === 'object'
+            ? v.userId
+            : { username: 'אנונימי' }
+        }));
+        setVideos(normalized);
       })
-      .catch(err => console.error("בעיה בשליפת הסרטונים:", err));
+      .catch(err => console.error("🚨 בעיה בשליפת הסרטונים:", err));
 
-    // שליפת המשתמש המחובר (אם יש טוקן)
+    // שליפת משתמש מחובר
     const token = localStorage.getItem('token');
     if (token) {
       fetch('http://localhost:5000/auth/me', {
@@ -39,7 +41,7 @@ export const VideoProvider = ({ children }) => {
           setCurrentUser(user);
           console.log("🔑 משתמש מחובר:", user);
         })
-        .catch(err => console.error("בעיה בשליפת המשתמש:", err));
+        .catch(err => console.error("🚨 בעיה בשליפת המשתמש:", err));
     }
   }, []);
 
@@ -50,25 +52,27 @@ export const VideoProvider = ({ children }) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify(video)
     })
       .then(res => {
-        if (!res.ok) {
-          throw new Error("הוספת הסרטון נכשלה");
-        }
+        if (!res.ok) throw new Error("הוספת הסרטון נכשלה");
         return res.json();
       })
-      .then(newVideo => setVideos(prev => [...prev, {
-        id: newVideo._id,
-        title: newVideo.title,
-        views: newVideo.views,
-        thumbnail: newVideo.thumbnail,
-        videoUrl: newVideo.videoUrl,
-        description: newVideo.description
-      }]))
-      .catch(err => console.error("בעיה בהוספת הסרטון:", err));
+      .then(newVideo => {
+        const added = {
+          id: newVideo._id,
+          title: newVideo.title,
+          views: newVideo.views,
+          thumbnail: newVideo.thumbnail,
+          videoUrl: newVideo.videoUrl,
+          description: newVideo.description,
+          userId: currentUser || { username: 'אנונימי' }
+        };
+        setVideos(prev => [...prev, added]);
+      })
+      .catch(err => console.error("🚨 בעיה בהוספת הסרטון:", err));
   };
 
   const deleteVideo = (id) => {
@@ -77,24 +81,23 @@ export const VideoProvider = ({ children }) => {
     })
       .then(res => res.json())
       .then(() => setVideos(prev => prev.filter(v => v.id !== id)))
-      .catch(err => console.error("בעיה במחיקת הסרטון:", err));
+      .catch(err => console.error("🚨 בעיה במחיקת הסרטון:", err));
   };
- 
+
   const fetchComments = async (videoId) => {
     try {
       const res = await fetch(`http://localhost:5000/comments/${videoId}`);
-      const data = await res.json();
-      return data;
+      return await res.json();
     } catch (err) {
-      console.error("בעיה בשליפת תגובות:", err);
+      console.error("🚨 בעיה בשליפת תגובות:", err);
       return [];
     }
   };
-  
+
   const addComment = async (videoId, text) => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`http://localhost:5000/comments`, {
+      const res = await fetch('http://localhost:5000/comments', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -102,18 +105,14 @@ export const VideoProvider = ({ children }) => {
         },
         body: JSON.stringify({ videoId, text })
       });
-  
+
       if (!res.ok) throw new Error("שגיאה בהוספת תגובה");
-  
-      const newComment = await res.json();  // ⬅️ כאן מחזירים את התגובה מהשרת
-      return newComment;
-  
+      return await res.json();
     } catch (err) {
-      console.error("שגיאה בהוספת תגובה:", err);
+      console.error("🚨 שגיאה בהוספת תגובה:", err);
       return null;
     }
   };
-  
 
   return (
     <VideoContext.Provider value={{
@@ -123,10 +122,10 @@ export const VideoProvider = ({ children }) => {
       searchTerm,
       setSearchTerm,
       currentUser,
-      setCurrentUser,   // ✅ הוספה חשובה בשביל logout!
+      setCurrentUser,
       fetchComments,
       addComment
-    }}>  
+    }}>
       {children}
     </VideoContext.Provider>
   );
