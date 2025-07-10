@@ -1,4 +1,4 @@
-
+/* File: src/pages/VideoPage.css */
 .video-page-container {
   display: flex;
   flex-direction: row;
@@ -40,10 +40,20 @@
 }
 
 .video-sidebar {
+  max-height: 80vh;
+  overflow-y: auto;
+  direction: ltr;
+}
+.video-sidebar > * {
+  direction: rtl; 
+}
+
+.video-sidebar {
   flex: none;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  overflow-y: auto;
   padding-right: 10px;
   padding-top: 20px;
   border-radius: 20px;
@@ -178,3 +188,17 @@
   font-size: 20px;
   color: #fff;
 }
+
+.video-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.video-sidebar::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+
+.video-sidebar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
