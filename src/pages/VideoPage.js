@@ -1,4 +1,3 @@
-// src/pages/VideoPage.js
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useVideos } from '../context/VideoContext';
@@ -7,29 +6,49 @@ import './VideoPage.css';
 export default function VideoPage() {
   const { id } = useParams();
   const { videos, fetchComments, addComment, currentUser } = useVideos();
+
+  const [video, setVideo] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
-  
-  const video = videos.find(v => v.id === id);
+
+  // מצא סרטון ברשימת הסרטונים שב־context
   const otherVideos = videos.filter(v => v.id !== id);
 
   useEffect(() => {
-    if (!id) return;
+    // נסה למצוא את הסרטון ב־context
+    const found = videos.find(v => v.id === id);
+    if (found) {
+      setVideo(found);
+    } else {
+      // אם לא קיים – הבא מהשרת
+      fetch(`http://localhost:5000/videos`)
+        .then(res => res.json())
+        .then(data => {
+          const v = data.find(v => v._id === id);
+          if (v) {
+            setVideo({
+              id: v._id,
+              title: v.title,
+              views: v.views,
+              thumbnail: v.thumbnail,
+              videoUrl: v.videoUrl,
+              description: v.description,
+              username: v.userId?.username
+            });
+          }
+        })
+        .catch(err => console.error("שגיאה בטעינת הסרטון:", err));
+    }
 
     // עדכון צפיות
     fetch(`http://localhost:5000/videos/${id}/views`, {
       method: 'PATCH'
     })
-      .then(res => {
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-        return res.json();
-      })
+      .then(res => res.json())
       .then(data => {
         console.log("✅ view updated", data.views);
       })
-      .catch(err => {
-        console.error("בעיה בעדכון צפייה:", err);
-      });
+      .catch(err => console.error("בעיה בעדכון צפייה:", err));
 
     // טעינת תגובות
     const loadComments = async () => {
@@ -37,7 +56,7 @@ export default function VideoPage() {
       setComments(data);
     };
     loadComments();
-  }, [id, fetchComments]);
+  }, [id, videos, fetchComments]);
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();

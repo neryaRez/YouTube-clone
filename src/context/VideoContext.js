@@ -13,22 +13,11 @@ export const VideoProvider = ({ children }) => {
     fetch('http://localhost:5000/videos')
       .then(res => res.json())
       .then(data => {
-        const normalized = data.map(v => ({
-          id: v._id,
-          title: v.title,
-          views: v.views,
-          thumbnail: v.thumbnail,
-          videoUrl: v.videoUrl,
-          description: v.description,
-          userId: v.userId && typeof v.userId === 'object'
-            ? v.userId
-            : { username: 'אנונימי' }
-        }));
-        setVideos(normalized);
+        setVideos(data); // ❗ שומר את המידע כמו שהוא, כולל userId.username אם קיים
       })
-      .catch(err => console.error("🚨 בעיה בשליפת הסרטונים:", err));
+      .catch(err => console.error("בעיה בשליפת הסרטונים:", err));
 
-    // שליפת משתמש מחובר
+    // שליפת המשתמש המחובר
     const token = localStorage.getItem('token');
     if (token) {
       fetch('http://localhost:5000/auth/me', {
@@ -41,7 +30,7 @@ export const VideoProvider = ({ children }) => {
           setCurrentUser(user);
           console.log("🔑 משתמש מחובר:", user);
         })
-        .catch(err => console.error("🚨 בעיה בשליפת המשתמש:", err));
+        .catch(err => console.error("בעיה בשליפת המשתמש:", err));
     }
   }, []);
 
@@ -52,27 +41,18 @@ export const VideoProvider = ({ children }) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify(video)
     })
       .then(res => {
-        if (!res.ok) throw new Error("הוספת הסרטון נכשלה");
+        if (!res.ok) {
+          throw new Error("הוספת הסרטון נכשלה");
+        }
         return res.json();
       })
-      .then(newVideo => {
-        const added = {
-          id: newVideo._id,
-          title: newVideo.title,
-          views: newVideo.views,
-          thumbnail: newVideo.thumbnail,
-          videoUrl: newVideo.videoUrl,
-          description: newVideo.description,
-          userId: currentUser || { username: 'אנונימי' }
-        };
-        setVideos(prev => [...prev, added]);
-      })
-      .catch(err => console.error("🚨 בעיה בהוספת הסרטון:", err));
+      .then(newVideo => setVideos(prev => [...prev, newVideo])) // ❗ גם כאן שומרים את האובייקט כפי שהוא
+      .catch(err => console.error("בעיה בהוספת הסרטון:", err));
   };
 
   const deleteVideo = (id) => {
@@ -80,8 +60,8 @@ export const VideoProvider = ({ children }) => {
       method: 'DELETE'
     })
       .then(res => res.json())
-      .then(() => setVideos(prev => prev.filter(v => v.id !== id)))
-      .catch(err => console.error("🚨 בעיה במחיקת הסרטון:", err));
+      .then(() => setVideos(prev => prev.filter(v => v._id !== id)))
+      .catch(err => console.error("בעיה במחיקת הסרטון:", err));
   };
 
   const fetchComments = async (videoId) => {
@@ -89,7 +69,7 @@ export const VideoProvider = ({ children }) => {
       const res = await fetch(`http://localhost:5000/comments/${videoId}`);
       return await res.json();
     } catch (err) {
-      console.error("🚨 בעיה בשליפת תגובות:", err);
+      console.error("בעיה בשליפת תגובות:", err);
       return [];
     }
   };
@@ -97,7 +77,7 @@ export const VideoProvider = ({ children }) => {
   const addComment = async (videoId, text) => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:5000/comments', {
+      const res = await fetch(`http://localhost:5000/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -109,7 +89,7 @@ export const VideoProvider = ({ children }) => {
       if (!res.ok) throw new Error("שגיאה בהוספת תגובה");
       return await res.json();
     } catch (err) {
-      console.error("🚨 שגיאה בהוספת תגובה:", err);
+      console.error("שגיאה בהוספת תגובה:", err);
       return null;
     }
   };
