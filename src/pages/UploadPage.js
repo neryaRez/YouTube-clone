@@ -1,4 +1,3 @@
-// src/pages/UploadPage.js
 import './UploadPage.css';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -8,21 +7,38 @@ export default function UploadPage() {
   const [videoUrl, setVideoUrl] = useState('');
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // 🔎 הפקת ID מהקישור מכל סוג
+  function extractVideoId(url) {
+    const regex = /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([^\?&]+)/;
+    const match = url.match(regex);
+    return match ? match[1] : '';
+  }
+
+  // 🖼️ הפקת thumbnail
   function getThumbnailFromUrl(url) {
-    const match = url.match(/embed\/(.+?)$/);
-    return match ? `https://img.youtube.com/vi/${match[1]}/0.jpg` : '';
+    const videoId = extractVideoId(url);
+    return videoId ? `https://img.youtube.com/vi/${videoId}/0.jpg` : '';
+  }
+
+  // ▶️ המרת הקישור ל־embed
+  function getEmbedUrl(url) {
+    const videoId = extractVideoId(url);
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setMessage('⏳ מעלה את הסרטון...');
 
     const token = localStorage.getItem('token');
 
     const newVideo = {
       title,
-      videoUrl,
+      videoUrl: getEmbedUrl(videoUrl),
       thumbnail: getThumbnailFromUrl(videoUrl),
       description,
     };
@@ -40,13 +56,15 @@ export default function UploadPage() {
       const data = await res.json();
 
       if (res.ok) {
-        setMessage('✅ סרטון הועלה בהצלחה');
-        navigate('/');
+        setMessage('✅ סרטון הועלה בהצלחה!');
+        setTimeout(() => navigate('/'), 1000);
       } else {
-        setMessage(data.message || 'שגיאה בהעלאה');
+        setMessage(data.message || '❌ שגיאה בהעלאה');
       }
     } catch (err) {
       setMessage('🚨 שגיאה בשרת');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,13 +87,17 @@ export default function UploadPage() {
         />
         <input
           type="text"
-          placeholder="YouTube Embed URL"
+          placeholder="קישור ל־YouTube (כל סוג נתמך)"
           value={videoUrl}
           onChange={(e) => setVideoUrl(e.target.value)}
           required
         />
-        <button type="submit">הוסף 🎬</button>
+        <button type="submit" disabled={loading}>
+          {loading ? '⏳ מעלה...' : 'הוסף 🎬'}
+        </button>
+        {loading && <div className="spinner"></div>}
       </form>
+
       {message && <p>{message}</p>}
     </div>
   );

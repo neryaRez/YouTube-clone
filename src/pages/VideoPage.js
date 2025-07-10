@@ -9,7 +9,7 @@ export default function VideoPage() {
   const { videos, fetchComments, addComment, currentUser } = useVideos();
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
-
+  
   const video = videos.find(v => v.id === id);
   const otherVideos = videos.filter(v => v.id !== id);
 

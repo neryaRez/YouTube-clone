@@ -103,14 +103,17 @@ export const VideoProvider = ({ children }) => {
         body: JSON.stringify({ videoId, text })
       });
   
-      if (!res.ok) throw new Error("שליחת תגובה נכשלה");
+      if (!res.ok) throw new Error("שגיאה בהוספת תגובה");
   
-      return await res.json();
+      const newComment = await res.json();  // ⬅️ כאן מחזירים את התגובה מהשרת
+      return newComment;
+  
     } catch (err) {
-      console.error("בעיה בשליחת תגובה:", err);
+      console.error("שגיאה בהוספת תגובה:", err);
       return null;
     }
   };
+  
 
   return (
     <VideoContext.Provider value={{
